@@ -264,7 +264,9 @@ pub fn init_sys_service(cfg: &mut web::ServiceConfig) {
             .service(
                 web::resource("/init")
                     .route(web::get().to(sys_init_get_request_handler))
-                    .route(web::put().to(sys_init_put_request_handler)),
+                    // .route(web::put().to(sys_init_put_request_handler))
+                    // According to the vault api definitions, the init endpoint should be POST request
+                    .route(web::post().to(sys_init_put_request_handler)),
             )
             .service(web::resource("/seal-status").route(web::get().to(sys_seal_status_request_handler)))
             .service(web::resource("/seal").route(web::put().to(sys_seal_request_handler)))

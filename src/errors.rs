@@ -141,6 +141,23 @@ pub enum RvError {
     ErrPkiRoleNotFound,
     #[error("PKI internal error.")]
     ErrPkiInternal,
+
+    // Kubernetes Errors
+    #[error("no host provided")]
+    ErrKubernetesHostMissing,
+    #[error("kubernetes_ca_cert must be given when disable_local_ca_jwt is true")]
+    ErrKubernetesCaCertMissing,
+    #[error("kubernetes pem bundle is invalid")]
+    ErrKubernetesPemBundleInvalid,
+    #[error("the read kubernetes config api is not support any parameters")]
+    ErrKubernetesReadConfigNotSupport,
+    #[error("the kubernetes config is not found")]
+    ErrKubernetesConfigMissing,
+    #[error("the kubernetes role name is missing")]
+    ErrKubernetesRoleNameMissing,
+    #[error("the kubernetes role is already exist")]
+    ErrKubernetesRoleAlreadyExists,
+
     #[error("Some IO error happened, {:?}", .source)]
     IO {
         #[from]
