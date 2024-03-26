@@ -19,6 +19,7 @@ use crate::{
 
 pub mod expiration;
 pub mod token_store;
+pub mod kubernetes;
 pub use expiration::ExpirationManager;
 pub use token_store::TokenStore;
 
@@ -271,6 +272,17 @@ impl Module for AuthModule {
         };
 
         self.add_backend("token", Arc::new(token_backend_new_func))?;
+
+        // add kubernetes backend
+        let kubernetes_store = kubernetes::KubernetesStore::new(core, Arc::clone(&self.expiration))?;
+        let kubernetes_backend_new_func = move |_c: Arc<RwLock<Core>>| -> Result<Arc<dyn Backend>, RvError> {
+            let mut backend = kubernetes_store.new_backend();
+            backend.init()?;
+            Ok(Arc::new(backend))
+        };
+
+        self.add_backend("kubernetes", Arc::new(kubernetes_backend_new_func))?;
+
         self.load_auth()?;
         self.setup_auth()?;
         self.expiration.restore()?;

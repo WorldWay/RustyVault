@@ -97,8 +97,12 @@ impl ResponseError for RvError {
 
 pub fn request_auth(req: &HttpRequest) -> Request {
     let mut r = Request::default();
-    if let Some(token) = req.cookie(AUTH_COOKIE_NAME) {
-        r.client_token = token.value().to_string();
+    // if let Some(token) = req.cookie(AUTH_COOKIE_NAME) {
+    //     r.client_token = token.value().to_string();
+    // }
+    // According to the vault api definitions, the token should be in the header with name "X-Vault-Token"
+    if let Some(token) = req.headers().get("X-Vault-Token") {
+        r.client_token = token.to_str().unwrap().to_string();
     }
     r
 }
